@@ -1,0 +1,37 @@
+<html xmlns:tomboy="http://beatniksoftware.com/tomboy" xmlns:size="http://beatniksoftware.com/tomboy/size" xmlns:link="http://beatniksoftware.com/tomboy/link"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>SwizzlingLab</title><style type="text/css">
+	body {  }
+	h1 { font-size: xx-large;
+     	     font-weight: bold;
+     	     border-bottom: 1px solid black; }
+	div.note {
+		   position: relative;
+		   display: block;
+		   padding: 5pt;
+		   margin: 5pt; 
+		   white-space: -moz-pre-wrap; /* Mozilla */
+ 	      	   white-space: -pre-wrap;     /* Opera 4 - 6 */
+ 	      	   white-space: -o-pre-wrap;   /* Opera 7 */
+ 	      	   white-space: pre-wrap;      /* CSS3 */
+ 	      	   word-wrap: break-word;      /* IE 5.5+ */ }
+	</style></head><body><div class="note" id="SwizzlingLab"><a name="swizzlinglab"></a><h1>SwizzlingLab</h1>
+Swizzling Lab - exploring a Business case for Thinking Storage
+
+Why persistent+coherent stores are the way forward
+
+Build as either/both, clustering minimally with OmniXtend, but when glob also contains CXL/CCIX/GenZ/openCAPI -aware components, it can ideally speak them to, if their various cache-coherence dances are compatible, or somehow brokered into mutual trust, these can agglomerate over heterogeneous links
+
+Case study, use octeon or similar to enque thread to a workq on every ;-or-.mcount with the expectation that it's a null swizzle, a {unlock;lock} sequence or yield instruction. Extend with other policies.
+Could erase the sequential expectation by (eg) swizzling to hash_of(&amp;object) at every sleep_on(&amp;object) - that allows the obvious and default policy, that a non-blocking call will usually return under the CPU that called it, to be removed.
+This default policy can fight its way back to the usual case, despite having been randomized out by addr-hashing, by competition at a transaction-broker interface, and earning its place in the final optimized linkage.
+
+Other policies that might compete:
+<ul><li dir="ltr">Stay if possible in abi of caller
+</li><li dir="ltr">Switch abi to ebpf, if an elf method in ebpf exists, and costs comparably (by use stats and/or empirical scoring)
+</li><li dir="ltr">Switch to send-to-gpu-or-somwhere wrapper, mebbe expressible as ebpf, if marshalling cost &lt; expected saving
+</li><li dir="ltr">History accumulates on these stats (ML math optimizations?) to guide brokers, accumulating till switch-back or join point, summed in as f(time, exception, etc)
+</li><li dir="ltr">For ebpf-expressible thunks, some will also be expressible as (eg) gpu thunks or octeon-pki-sso thunks
+</li><li dir="ltr">Simulated Annealing should ensue</li></ul>
+
+See “Persistent Memory: Media, Attachment, and Usage” <a style="color:#3465A4" href="https://youtu.be/dGEJtvpuORQ">https://youtu.be/dGEJtvpuORQ</a>
+
+</div></body></html>

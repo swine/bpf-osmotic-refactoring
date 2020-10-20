@@ -1,0 +1,55 @@
+<html xmlns:tomboy="http://beatniksoftware.com/tomboy" xmlns:size="http://beatniksoftware.com/tomboy/size" xmlns:link="http://beatniksoftware.com/tomboy/link"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>AgressiveLazyOptimism</title><style type="text/css">
+	body {  }
+	h1 { font-size: xx-large;
+     	     font-weight: bold;
+     	     border-bottom: 1px solid black; }
+	div.note {
+		   position: relative;
+		   display: block;
+		   padding: 5pt;
+		   margin: 5pt; 
+		   white-space: -moz-pre-wrap; /* Mozilla */
+ 	      	   white-space: -pre-wrap;     /* Opera 4 - 6 */
+ 	      	   white-space: -o-pre-wrap;   /* Opera 7 */
+ 	      	   white-space: pre-wrap;      /* CSS3 */
+ 	      	   word-wrap: break-word;      /* IE 5.5+ */ }
+	</style></head><body><div class="note" id="AgressiveLazyOptimism"><a name="agressivelazyoptimism"></a><h1>AgressiveLazyOptimism</h1>
+take an ecosystem like aosp.ninja
+
+rework all implied-sequentialism by toolchain
+<ul><li dir="ltr">launch order is like make -k -j$HUGE
+</li><li dir="ltr">commit order is like make -j1
+</li><li dir="ltr">stat/open becomes a speculation/clone point
+</li><li dir="ltr">write/close/creat/rm become rippling flush points</li></ul>
+
+all mem spaces are potentially global, via vet/veto brokers of the inter-scope (addr, pid, asid, generation) wormholes
+
+agressive inter-cache draining of all data/metadata/intent/commit out toward the domain edges, just before persistent storage or publication over links
+
+efficient delta-encoding of (meta)data as continuous flow sieved thru an active-colander mesh with TMI/NotYetKnown backchannel at fine granularity
+<ul><li dir="ltr">core1: mem[addr] := 3
+<ul><li dir="ltr">c1/L1d$ tells c1/cluster/L2d$ (vma[pid][addr], 3, asid, pid, ownership)
+</li><li dir="ltr">if c1/cluster/L2d$ has noted no contention/logging for that slot, the message goes no further
+</li></ul></li><li dir="ltr">when values must propagate, a sweep of delta encoding, when
+<ul><li dir="ltr">(Val_Is_Explicit, Value, timestamp) sent when peer is/maybe interested, but has not been told
+</li><li dir="ltr">(Val_is_unchanged) encoded as single zero bit
+</li></ul></li><li dir="ltr">stream compressed with OOB? run-of-zeros(NZeros) pattern which can easily be filtered to run-of-some-zeros()
+</li><li dir="ltr">TMI(pattern of pid,addr,timestamp) staunches flow of detail, resigning from interest in an address range
+</li><li dir="ltr">consider ptrace/strace/gdb/mmap as the general rule, the worst-case default, which spams everyone until they TMI the window shut
+</li><li dir="ltr">where you might want to reopen that window to peek is in those cases, plus (for example)
+<ul><li dir="ltr">writing to an mmap'd buffer
+</li><li dir="ltr">SIGIO, poll, read, and other rdma hooks
+</li></ul></li><li dir="ltr">POISON data has flavors like block_until_continuation_fires(&amp;cont)
+</li><li dir="ltr">special continuations like &amp;has_happened, &amp;cannot_happen, &amp;cause_signal[N] shape the logic</li></ul>
+
+Expose whole cgroup to this scrutiny and transactional threading by tracing across a cpu boundary which may include mapping memory from FPGA-"owned" memory, which host system has ceded to virtual entities in pynq-mapped space.
+These are usually very thin protocol engines across an FPGA-expedited gateway where the essential trigger/cull/pass properties of a vet/veto agent constrain OmniXtend chatter to more or less the usual inter-cache volume.
+But the exceptions to normal traffic are the differences which enable massive parallelism, so a whole clone of expectant pull-model generators appear on oft-used paths, ready to shepherd new waves of data thru well-worn and now polished paths.
+Often these optimize
+<ul><li dir="ltr">from: cpu -&gt; FPGA_gate -&gt; f1.cpu -&gt; Fg -&gt; f2.cpu -&gt; Fg -&gt; cpu
+</li><li dir="ltr">via: cpu -&gt; Fg -&gt; (f1;f2).fpga -&gt; Fg -&gt; cpu
+</li><li dir="ltr">to: cpu -&gt; (f1;f2).Fg -&gt; cpu</li></ul>
+
+
+
+</div></body></html>

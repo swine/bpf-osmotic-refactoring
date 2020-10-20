@@ -1,0 +1,31 @@
+<html xmlns:tomboy="http://beatniksoftware.com/tomboy" xmlns:size="http://beatniksoftware.com/tomboy/size" xmlns:link="http://beatniksoftware.com/tomboy/link"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>wireshark++</title><style type="text/css">
+	body {  }
+	h1 { font-size: xx-large;
+     	     font-weight: bold;
+     	     border-bottom: 1px solid black; }
+	div.note {
+		   position: relative;
+		   display: block;
+		   padding: 5pt;
+		   margin: 5pt; 
+		   white-space: -moz-pre-wrap; /* Mozilla */
+ 	      	   white-space: -pre-wrap;     /* Opera 4 - 6 */
+ 	      	   white-space: -o-pre-wrap;   /* Opera 7 */
+ 	      	   white-space: pre-wrap;      /* CSS3 */
+ 	      	   word-wrap: break-word;      /* IE 5.5+ */ }
+	</style></head><body><div class="note" id="wireshark++"><a name="wireshark++"></a><h1>wireshark++</h1>
+extend bpf-hookable property to all socktypes, ltrace wedges
+
+wireshark is a visualization interface for bpf-enabled(+etc) interfaces
+
+does it handle loopback and unix-domain and other skb-handled transports?
+It should.
+Plus whatever annotated-frame analogues the likes of ltrace/ptrace/lock-journaling/perf/gdb/anything-bpfable can present to a sockish/libpcap gateway
+
+project goal - perf tools can tally stats of bpf/bpfable
+What are possible savings of simple bpfengine hordes taking on bounded nanotasks?
+Find out by tracking host cpu's PC by thunk-level elf?attributes exploring if this thunk could be bpf (y,n,?)
+Display as diff colors on perf top, for example.
+Analyse +/- bpfable, looking for long streams of bothways code, and latencies (bpf-equiv run lengths between preemptible decision points)
+
+</div></body></html>

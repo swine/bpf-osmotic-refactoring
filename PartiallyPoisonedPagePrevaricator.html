@@ -1,0 +1,32 @@
+<html xmlns:tomboy="http://beatniksoftware.com/tomboy" xmlns:size="http://beatniksoftware.com/tomboy/size" xmlns:link="http://beatniksoftware.com/tomboy/link"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>PartiallyPoisonedPagePrevaricator</title><style type="text/css">
+	body {  }
+	h1 { font-size: xx-large;
+     	     font-weight: bold;
+     	     border-bottom: 1px solid black; }
+	div.note {
+		   position: relative;
+		   display: block;
+		   padding: 5pt;
+		   margin: 5pt; 
+		   white-space: -moz-pre-wrap; /* Mozilla */
+ 	      	   white-space: -pre-wrap;     /* Opera 4 - 6 */
+ 	      	   white-space: -o-pre-wrap;   /* Opera 7 */
+ 	      	   white-space: pre-wrap;      /* CSS3 */
+ 	      	   word-wrap: break-word;      /* IE 5.5+ */ }
+	</style></head><body><div class="note" id="PartiallyPoisonedPagePrevaricator"><a name="partiallypoisonedpageprevaricator"></a><h1>PartiallyPoisonedPagePrevaricator</h1>
+aka <a style="color:#204A87" href="#feraldataspace">FeralDataspace</a>
+
+even in the absence of efficient poisoned-cacheline injectors for using RAS-capable pipelines for lazy/eager parallelism, we can use the old unmapped-page VM basics to micro-manage memory residence/ownership at the cacheline level
+
+non-blocking methods (may lodge an interrupt, but will never sleep) may perhaps need to parallel any page/etc methods which might otherwise sleep
+
+grow a superclass of page/msg/blk/skb/etc _ops which have such variants (maybe same as old) and other archidongles, and itchingly some bpf/etc gates
+
+atf/parent context dances the data in/out of cache by emu or stepping for remainer of thunk, then continues with cache populated but page otherwise still poisoned
+
+this dance may include omnixtend or journaling state to nvme objects of task state. may fit well with computation stg ideas, as well as migration
+
+see Chapel language for something to throw into the ebpf/p4/vulkan/go semantic stew, too
+
+looks like a good adjunct to the <a style="color:#204A87" href="#feralargspace">FeralArgspace</a> project
+</div></body></html>

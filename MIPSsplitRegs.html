@@ -1,0 +1,36 @@
+<html xmlns:tomboy="http://beatniksoftware.com/tomboy" xmlns:size="http://beatniksoftware.com/tomboy/size" xmlns:link="http://beatniksoftware.com/tomboy/link"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>MIPSsplitRegs</title><style type="text/css">
+	body {  }
+	h1 { font-size: xx-large;
+     	     font-weight: bold;
+     	     border-bottom: 1px solid black; }
+	div.note {
+		   position: relative;
+		   display: block;
+		   padding: 5pt;
+		   margin: 5pt; 
+		   white-space: -moz-pre-wrap; /* Mozilla */
+ 	      	   white-space: -pre-wrap;     /* Opera 4 - 6 */
+ 	      	   white-space: -o-pre-wrap;   /* Opera 7 */
+ 	      	   white-space: pre-wrap;      /* CSS3 */
+ 	      	   word-wrap: break-word;      /* IE 5.5+ */ }
+	</style></head><body><div class="note" id="MIPSsplitRegs"><a name="mipssplitregs"></a><h1>MIPSsplitRegs</h1>
+explore a minimal vehicle for heterogeneous OS actors by extending MIPS's 2-register reservation for page-fault handling.
+Take an embedded ecosystem like OpenWRT, rebuild with more than the standard 2-reg (r25/r26 IIRC) exclusion from gcc's playthings.
+
+This models in a minimal way, on legacy hardware, the possibilities of having ubiquitous cache-coherent actors within PCI/etc fabric, as one might later come to expect from an NVMe/comp.stg architecture, or ebpf-capable processors attached to a system's DMA devices.
+Typical eBPF/etc actors would have greater capabilities, so this represents a minimal existence proof for proposed features
+
+Assess code ballooning from building C/etc components with reduced registers, gather footprint data on the asm-specified pieces which use the now-forbidden registers.
+
+Adding 2 regs might be sufficient, so the NMIs for page-fault would now have 4 registers to play with.
+
+As before these exceptions
+<ul><li dir="ltr">must be idempotent and interruptible, they should be harmless if aborted or re-executed, but once they have run to completion the previous context can make progress by advancing PC at least one instruction
+</li><li dir="ltr">may now address more complex goals, like
+<ul><li dir="ltr"> SDEI insertion
+</li><li dir="ltr">cache-coherency state-machine transitions
+</li><li dir="ltr">RAS handling (poisoned cacheline wrangling)
+</li><li dir="ltr">swizzling .mcount-level properties</li></ul></li></ul>
+
+
+</div></body></html>

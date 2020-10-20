@@ -1,0 +1,29 @@
+Overview: miscible rpc in coherent multiarch dmaspaces, allows osmotic refactoring
+
+Central concept in various diverse ramblings since systemclick.org started
+as pencil sketches in 2013 before I joined Cavium, where the ideas of migration
+of workload to programmable offload engines seemed applicable, but go no traction.
+Now dropping these disorganized notes to public location preparatory to joining
+Google, to avert any future claims that they might have been developed within Google.
+
+Inspired by some beautiful design abstractions in a project that was conceived with
+one hand behind it's back, destined never to upstream - the Click Modular Router.
+
+Also Xpra, an X11-py-rpc-py-X11 as a target of a slightly different sister project,
+osmotic py rpc
+
+Also inspiration from early access to the no-shared-mem message passing unix port
+of the elxi6400, a radical 1980's capability architecture
+
+But I'll now recast it in the language of kernel/eBPF/user interactions, to show how
+we can model the expected performance improvement of FPGA-or-ASIC-or-cloud decomposition
+
+eBPF is increasingly being used in places where user/kernel or kernel/hw or user/hw
+interactions can be precompiled and prevalidated. This means various interactions
+can shortcut more expensive callchains which dance between kernel/user spaces to
+consult user policy, when the policy can be formulated in eBPF, validated,
+installed in kernel, so less trust/locality zones need to be transited to process
+an event.
+
+The same technique can be used where NVMe/comp.stg allows lower layers of
+filesystem or search processing to be subcontracted to storage leaves

@@ -1,0 +1,98 @@
+<html xmlns:tomboy="http://beatniksoftware.com/tomboy" xmlns:size="http://beatniksoftware.com/tomboy/size" xmlns:link="http://beatniksoftware.com/tomboy/link"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><title>Index</title><style type="text/css">
+	body {  }
+	h1 { font-size: xx-large;
+     	     font-weight: bold;
+     	     border-bottom: 1px solid black; }
+	div.note {
+		   position: relative;
+		   display: block;
+		   padding: 5pt;
+		   margin: 5pt; 
+		   white-space: -moz-pre-wrap; /* Mozilla */
+ 	      	   white-space: -pre-wrap;     /* Opera 4 - 6 */
+ 	      	   white-space: -o-pre-wrap;   /* Opera 7 */
+ 	      	   white-space: pre-wrap;      /* CSS3 */
+ 	      	   word-wrap: break-word;      /* IE 5.5+ */ }
+	</style></head><body><div class="note" id="Index"><a name="index"></a><h1>Index</h1>
+Overview: miscible rpc in coherent multiarch dmaspaces, allows osmotic refactoring
+
+Central concept in various diverse ramblings since systemclick.org started as pencil sketches in 2013 before I joined Cavium, where the ideas of migration of workload to programmable offload engines seemed applicable, but go no traction.
+Now dropping these disorganized notes to public location preparatory to joining Google, to avert any future claims that they might have been developed within Google.
+
+Inspired by some beautiful design abstractions in a project that was conceived with one hand behind it's back, destined never to upstream - the Click Modular Router.
+
+Also Xpra, an X11-py-rpc-py-X11 as a target of a slightly different sister project, osmotic py rpc
+
+Also inspiration from early access to the no-shared-mem message passing unix of elxi6400, a radical capability architecture
+
+But I'll now recast it in the language of kernel/eBPF/user interactions, to show how we can model the expected performance improvement of FPGA-or-ASIC-or-cloud decomposition
+
+eBPF is increasingly being used in places where user/kernel or kernel/hw or user/hw interactions can be precompiled and prevalidated. This means various interactions can shortcut more expensive callchains which dance k-&gt;u-&gt;k to consult user policy, when the policy can be formulated in eBPF, validated, installed in kernel so less trust/locality zones need to be transited to process an event.
+
+Examples:
+<ul><li dir="ltr">Packet filtering/annotation/scheduling
+</li><li dir="ltr">signal handling, inc poll/segfault/pagefault
+</li><li dir="ltr">many...</li></ul>
+
+Extend this dynamically with
+<ul><li dir="ltr">lookahead at syscall return for a C continuation which is annotated _also_available_in_eBPF_, and return into it instead
+</li><li dir="ltr">identify some low-hanging fruit, syscall chains with logic which is eBPFable, and have those inter-syscall thunks recast as local functions in an elf/dwarf/etc-augmented format that allows its entry point to be flagged _also_available_in_..._
+</li><li dir="ltr">both versions are optional, real eBPF-sourced thunks have a NULL host entry
+</li><li dir="ltr">both versions have a continuation (return point and stackframe) identical, at the end of the next syscall, so it matters not to program correctness which one is used
+</li><li dir="ltr">continuation logic can make the decision, when the ongoing execution path is available in both domains, whether to jump to a cheaper path or not, factoring in insertion cost, argument cost, availability, etc
+</li><li dir="ltr">insertion cost is the cost of a call to an empty function, of pushing context across the domain boundary, waiting-or-scheduling, getting results back
+</li><li dir="ltr">argument cost depends on code, could be specified as advertised or verified polynomial in args, perhaps augmented by gathered stats. Measures total data transfer latency introduced by calling this function cross-domain, including that of landing the results and side-effects before the return point. Writes need not have landed at return point, as long as it's coherent transport - the first ref from the calling context will block until it's cache obtains consistent state, but the expected latency of those waits by the calling domain should be indicated in the advertised argument cost.<br>(arm/etc mem tagging - can we see perf stats by tag?)</li></ul>
+
+Trying this optional transform on some low-hanging fruit (xargs grep, for example), see how many times a kuk can be avoided, an at what cost in analysis and tweaking
+
+These co-expressible chunks are miscible, able to slide up/down the trust and abstraction stack to skip the insertion/arg when there's a same-domain continuation
+
+eBPF thunks are not the only possible co-expressible thunk
+<ul><li dir="ltr">rpc server/client/server trip elimination, launch results toward peer, but execute locally then flush (xpra host blurring)
+</li><li dir="ltr">FPGA-expressible glue between IP with defined interfaces, or dynamic IP built of eBPF-derived thunks</li></ul>
+
+Consider a device specified in systemVerilog or silice or pynqy tools, where driver has state-handling code for some software state-transition tables, and many of those state-transition actions are found to be eBPF-expressible, in the map domain that the FPGA device's DMA-etc logic inhabits.
+For frequent-or-critical elements of that table, which can resolve to a small enough investment of LUTs + ram, the device can grow some area to handle some of those transitions entirely within itself, avoiding the insertion+transfer costs
+
+Where a function can skip abstraction layers by this co-expressible property, it is miscible
+
+Adjacent miscible layers in the call graph may coalesce, perhaps recommended over host code because their collective savings in insertion/arg cost has been shown to have a good ROI on cache/kmem/LUTs/whatever the alt version occupies
+
+Example flows 
+<ul><li dir="ltr">take the protocol to the NIC
+</li><li dir="ltr">take the regex to the pagehandler or the NVMe filestore
+</li><li dir="ltr">fan out the sql search to leavic es, flow-controlled by join
+</li><li dir="ltr">flow parsers out to pages, dancing across the file/skb level data, returning only the tree to host, which is pulled into host cache domain only on demand</li></ul>
+
+See how far the graph can be colored bpfable or fpgable in select workflows, when scheduler augmented to big.LITTLE switch based on synthetic weights reflecting design goals
+
+Simplest granularity for proof-of-concept is .mcount thunks and the per-statement symtab-identified thunk sequence of gcc -g -G0 code.
+
+tag each line with bool bpfable, even if actual bpf code not attached - it means it can pass the security/runlength/jumps validation.
+
+on the cusp of return to userspace, in potential kuk, where all the intervening  thunks of the 'u' are bpfable, emulate and account with kernel these intervening thunks, at least once, gathering stats
+
+or, when confidence improves, and such transits are r/o code all bpfable, transliterate to either bpf or dynamic kernel code.
+Basically, safe code tweaked as needed for getu/putu.
+
+if dummy call (static key) interpolated at each line (a la gdb) so 'u' code that's followed by (bpfable)+;syscall actually makes that kernel transition earlier, into sys_run_till_syscall().
+That's a sanity check, normally this kuuk-&gt;kukk doesn't help, but it shows the footprint of the possible.
+Where the u* sequence goes to zero, so kuuk-&gt;kkkk, we've eliminated domain crossing.
+
+A large driver for this kind of annealing of system dynamics, moving the domain boundaries of the granules which make up the design, is the cost of dataflow between different grains, like k/u or flash-&gt;dram-&gt;cache-&gt;cpu or pci/nvme bulk transfer.
+But cache coherent fabrics like ccix/cxl/tilelink/... allow much of the special handling around asymmetric systems and PCIe dma masters like NVMe or NICs to be collapsed
+
+The main goal of my explorations here is how to architect a system where such miscible system layers can be produced, such that certain API layers can move across domain boundaries, like cpu/gpu/fpga or local/remote or kernel/user without affecting system integrity or correctness or security.
+
+The particular examples used merely serve to hone the tools, because they are easily understood test benchmarks, not because they're necessarily in need of assistance by custom offload engines or edge intelligence
+
+As a debug/trace hook, as much as anything, (strace/ltrace/wireshark)-trackable interfaces are explored in  <a style="color:#204A87" href="#wireshark++">wireshark++</a>
+
+Decision points on whether to jump boundaries are best made at pinch points where the state space is smallest, such as exec() or send()/rcv() or sync() or call/return.
+See <a style="color:#204A87" href="#feralargspace">FeralArgspace</a> for this
+
+Occasionally I assume the implications of the RAS-provided cacheline-poisoning, as a fully supported feature of all mem/cache systems. This is explored a little in <a style="color:#204A87" href="#agressivelazyoptimism">AgressiveLazyOptimism</a> but needs a fuller writeup.
+Sequentially decoupling into pipelines under a futex/pipe/rust/chapel by modeling pending-data as a fully supported object state. 
+The use of poisoned cachelines as not merely a hardware exception placeholder, but a generic sticky-note, invoking any handler which may make use of vma-indexed propeties to produce/consume/log/subvert, doesn't seem to be widely covered.
+But it's premature to predicate a design on it - i haven't seen either an x86 or arm feature which can efficiently generate poisoned cachelines as quickly and plentifully as zero-filled cachelines. That would be needed before efficiently enacting some kind of cacheline-granularity pagefault handler
+</div></body></html>
